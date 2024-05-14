@@ -1,17 +1,9 @@
 <script setup lang="ts">
-//
+import CustomNavBar from '@/components/CustomNavBar.vue'
 </script>
 
 <template>
-  <uni-card
-    title="基础卡片"
-    sub-title="副标题"
-    extra="额外信息"
-    thumbnail="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/unicloudlogo.png"
-  >
-    <text>...... .. you</text>
-  </uni-card>
-
+  <CustomNavBar />
   <view class="index">111122222111</view>
 </template>
 
