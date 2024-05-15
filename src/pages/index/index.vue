@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import CustomNavBar from '@/components/CustomNavBar.vue'
-import { getHomeBannerData } from '@/services/home'
+import CustomNavBar from './components/CustomNavBar.vue'
+import CategoryPanel from './components/CategoryPanel.vue'
+import { getHomeBannerData, getHomeCategoryData } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
-import type { BannerItem } from 'home'
+import type { BannerItem, CategoryItem } from 'home'
 import { ref } from 'vue'
 
 const bannerList = ref<BannerItem[]>([])
+
+const categoryList = ref<CategoryItem[]>([])
 
 const getBannerList = () => {
   getHomeBannerData().then((res) => {
@@ -13,15 +16,22 @@ const getBannerList = () => {
   })
 }
 
+const getCategory = () => {
+  getHomeCategoryData().then((res) => {
+    categoryList.value = res.result
+  })
+}
+
 onLoad(() => {
   getBannerList()
+  getCategory()
 })
 </script>
 
 <template>
   <CustomNavBar />
   <XtxSwiper :list="bannerList" />
-  <view class="index">111122222111</view>
+  <CategoryPanel :list="categoryList" />
 </template>
 
 <style lang="scss">
