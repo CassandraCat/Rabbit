@@ -1,5 +1,5 @@
 import { http } from '@/utils/http'
-import type { BannerItem, CategoryItem, HotItem } from 'home'
+import type { BannerItem, CategoryItem, GuessItem, HotItem } from 'home'
 
 export const getHomeBannerData = (distributionSite = 1) => {
   return http<BannerItem[]>({
@@ -22,5 +22,13 @@ export const getHomeHotData = () => {
   return http<HotItem[]>({
     method: 'GET',
     url: '/home/hot/mutli',
+  })
+}
+
+export const getHomeGoodsGuessLikeData = (data?: PageParams) => {
+  return http<PageResult<GuessItem>>({
+    method: 'GET',
+    url: '/home/goods/guessLike',
+    data,
   })
 }
