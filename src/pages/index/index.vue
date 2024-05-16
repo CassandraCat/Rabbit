@@ -11,6 +11,7 @@ import {
 import { onLoad } from '@dcloudio/uni-app'
 import type { BannerItem, CategoryItem, GuessItem, HotItem } from 'home'
 import { ref } from 'vue'
+import PageSkeleton from './components/PageSkeleton.vue'
 
 const bannerList = ref<BannerItem[]>([])
 const getBannerList = () => {
@@ -59,7 +60,7 @@ const onScrollToLower = async () => {
 }
 
 const resetData = () => {
-  pageParams.page = 1
+  pageParams.page = 2
   guessList.value = []
   finish.value = false
 }
@@ -72,11 +73,13 @@ const onRefresherRefresh = () => {
   })
 }
 
+const isLoading = ref(true)
+
 onLoad(() => {
-  getBannerList()
-  getCategory()
-  getHomeHot()
-  getHomeGuessList()
+  isLoading.value = true
+  Promise.all([getBannerList(), getCategory(), getHomeHot(), getHomeGuessList()]).then(() => {
+    isLoading.value = false
+  })
 })
 </script>
 
@@ -91,10 +94,13 @@ onLoad(() => {
       @scrolltolower="onScrollToLower"
       refresher-enabled
     >
-      <XtxSwiper :list="bannerList" />
-      <CategoryPanel :list="categoryList" />
-      <HotPanel :list="hotList" />
-      <XtxGuess :list="guessList" :finish="finish" />
+      <PageSkeleton v-if="isLoading" />
+      <template v-else>
+        <XtxSwiper :list="bannerList" />
+        <CategoryPanel :list="categoryList" />
+        <HotPanel :list="hotList" />
+        <XtxGuess :list="guessList" :finish="finish" />
+      </template>
     </scroll-view>
   </view>
 </template>
