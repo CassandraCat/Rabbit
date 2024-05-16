@@ -13,38 +13,32 @@ import type { BannerItem, CategoryItem, GuessItem, HotItem } from 'home'
 import { ref } from 'vue'
 
 const bannerList = ref<BannerItem[]>([])
-
-const categoryList = ref<CategoryItem[]>([])
-
-const hotList = ref<HotItem[]>([])
-
-const guessList = ref<GuessItem[]>([])
-
-const finish = ref(false)
-
-const pageParams: Required<PageParams> = {
-  page: 2,
-  pageSize: 10,
-}
-
 const getBannerList = () => {
   getHomeBannerData().then((res) => {
     bannerList.value = res.result
   })
 }
 
+const categoryList = ref<CategoryItem[]>([])
 const getCategory = () => {
   getHomeCategoryData().then((res) => {
     categoryList.value = res.result
   })
 }
 
+const hotList = ref<HotItem[]>([])
 const getHomeHot = () => {
   getHomeHotData().then((res) => {
     hotList.value = res.result
   })
 }
 
+const guessList = ref<GuessItem[]>([])
+const finish = ref(false)
+const pageParams: Required<PageParams> = {
+  page: 2,
+  pageSize: 10,
+}
 const getHomeGuessList = () => {
   getHomeGoodsGuessLikeData().then((res) => {
     guessList.value = res.result.items
@@ -64,6 +58,20 @@ const onScrollToLower = async () => {
   }
 }
 
+const resetData = () => {
+  pageParams.page = 1
+  guessList.value = []
+  finish.value = false
+}
+const isTriggered = ref(false)
+const onRefresherRefresh = () => {
+  isTriggered.value = true
+  resetData()
+  Promise.all([getBannerList(), getCategory(), getHomeHot(), getHomeGuessList()]).then(() => {
+    isTriggered.value = false
+  })
+}
+
 onLoad(() => {
   getBannerList()
   getCategory()
@@ -75,7 +83,14 @@ onLoad(() => {
 <template>
   <view class="viewport">
     <CustomNavBar />
-    <scroll-view scroll-y class="scroll-view" @scrolltolower="onScrollToLower">
+    <scroll-view
+      scroll-y
+      @refresherrefresh="onRefresherRefresh"
+      :refresher-triggered="isTriggered"
+      class="scroll-view"
+      @scrolltolower="onScrollToLower"
+      refresher-enabled
+    >
       <XtxSwiper :list="bannerList" />
       <CategoryPanel :list="categoryList" />
       <HotPanel :list="hotList" />
