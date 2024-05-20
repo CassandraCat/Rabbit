@@ -2,16 +2,12 @@
 import CustomNavBar from './components/CustomNavBar.vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 import HotPanel from './components/HotPanel.vue'
-import {
-  getHomeBannerData,
-  getHomeCategoryData,
-  getHomeGoodsGuessLikeData,
-  getHomeHotData,
-} from '@/services/home'
+import { getHomeBannerData, getHomeCategoryData, getHomeHotData } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
-import type { BannerItem, CategoryItem, GuessItem, HotItem } from 'home'
+import type { BannerItem, CategoryItem, HotItem } from 'home'
 import { ref } from 'vue'
 import PageSkeleton from './components/PageSkeleton.vue'
+import { useGuessList } from '@/composables/useGuess'
 
 const bannerList = ref<BannerItem[]>([])
 const getBannerList = () => {
@@ -34,50 +30,24 @@ const getHomeHot = () => {
   })
 }
 
-const guessList = ref<GuessItem[]>([])
-const finish = ref(false)
-const pageParams: Required<PageParams> = {
-  page: 2,
-  pageSize: 10,
-}
-const getHomeGuessList = () => {
-  getHomeGoodsGuessLikeData().then((res) => {
-    guessList.value = res.result.items
-  })
-}
+const { guessRef, onScrollToLower } = useGuessList()
 
-const onScrollToLower = async () => {
-  if (finish.value === true) {
-    return uni.showToast({ icon: 'none', title: '没有更多数据~' })
-  }
-  const res = await getHomeGoodsGuessLikeData(pageParams)
-  guessList.value.push(...res.result.items)
-  if (pageParams.page < res.result.pages) {
-    pageParams.page++
-  } else {
-    finish.value = true
-  }
-}
-
-const resetData = () => {
-  pageParams.page = 2
-  guessList.value = []
-  finish.value = false
-}
 const isTriggered = ref(false)
 const onRefresherRefresh = () => {
   isTriggered.value = true
-  resetData()
-  Promise.all([getBannerList(), getCategory(), getHomeHot(), getHomeGuessList()]).then(() => {
-    isTriggered.value = false
-  })
+  guessRef.value?.resetData()
+  Promise.all([getBannerList(), getCategory(), getHomeHot(), guessRef.value?.getMore()]).then(
+    () => {
+      isTriggered.value = false
+    },
+  )
 }
 
 const isLoading = ref(true)
 
 onLoad(() => {
   isLoading.value = true
-  Promise.all([getBannerList(), getCategory(), getHomeHot(), getHomeGuessList()]).then(() => {
+  Promise.all([getBannerList(), getCategory(), getHomeHot()]).then(() => {
     isLoading.value = false
   })
 })
@@ -99,7 +69,7 @@ onLoad(() => {
         <XtxSwiper :list="bannerList" />
         <CategoryPanel :list="categoryList" />
         <HotPanel :list="hotList" />
-        <XtxGuess :list="guessList" :finish="finish" />
+        <XtxGuess ref="guessRef" />
       </template>
     </scroll-view>
   </view>

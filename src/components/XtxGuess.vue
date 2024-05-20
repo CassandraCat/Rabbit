@@ -1,11 +1,43 @@
 <script setup lang="ts">
+import { getHomeGoodsGuessLikeData } from '@/services/home'
+import { onLoad } from '@dcloudio/uni-app'
 import type { GuessItem } from 'home'
+import { onMounted, ref } from 'vue'
 
-defineProps<{
-  list: GuessItem[]
-  finish: boolean
-}>()
-// 分页参数
+const guessList = ref<GuessItem[]>([])
+const finish = ref(false)
+const pageParams: Required<PageParams> = {
+  page: import.meta.env.DEV ? 30 : 1,
+  pageSize: 10,
+}
+
+const getHomeGoodsGuessLikeList = async () => {
+  if (finish.value === true) {
+    return uni.showToast({ icon: 'none', title: '没有更多数据~' })
+  }
+  const res = await getHomeGoodsGuessLikeData(pageParams)
+  guessList.value.push(...res.result.items)
+  if (pageParams.page < res.result.pages) {
+    pageParams.page++
+  } else {
+    finish.value = true
+  }
+}
+
+const resetData = () => {
+  pageParams.page = 1
+  guessList.value = []
+  finish.value = false
+}
+
+onMounted(() => {
+  getHomeGoodsGuessLikeList()
+})
+
+defineExpose({
+  resetData,
+  getMore: getHomeGoodsGuessLikeList,
+})
 </script>
 
 <template>
@@ -16,7 +48,7 @@ defineProps<{
   <view class="guess">
     <navigator
       class="guess-item"
-      v-for="item in list"
+      v-for="item in guessList"
       :key="item.id"
       :url="`/pages/goods/goods?id=${item.id}`"
     >
