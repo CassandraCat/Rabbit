@@ -48,7 +48,9 @@ const onChangeCount = (ev: InputNumberBoxEvent) => {
 
 const onChangeSelected = (item: CartItem) => {
   item.selected = !item.selected
-  putMemberCartBySkuIdData(item.skuId, { selected: item.selected })
+  putMemberCartBySkuIdData(item.skuId, { selected: item.selected }).then((res) => {
+    console.log(res)
+  })
 }
 
 const isSelectedAll = computed(() => {
@@ -74,6 +76,16 @@ const selectedCartListMoney = computed(() => {
     .reduce((sum, item) => sum + item.count * item.nowPrice, 0)
     .toFixed(2)
 })
+
+const goToPayment = () => {
+  if (selectedCartListCount.value === 0) {
+    return uni.showToast({
+      icon: 'none',
+      title: '请选择商品',
+    })
+  }
+  uni.navigateTo({ url: '/pagesOrder/create/create' })
+}
 
 const { guessRef, onScrollToLower } = useGuessList()
 
@@ -157,7 +169,11 @@ onShow(() => {
         <text class="text">合计:</text>
         <text class="amount">{{ selectedCartListMoney }}</text>
         <view class="button-grounp">
-          <view class="button payment-button" :class="{ disabled: selectedCartListCount === 0 }">
+          <view
+            @tap="goToPayment"
+            class="button payment-button"
+            :class="{ disabled: selectedCartListCount === 0 }"
+          >
             去结算({{ selectedCartListCount }})
           </view>
         </view>

@@ -15,7 +15,7 @@ const onGetPhoneNumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
 }
 
 const onGetPhoneNumberSimple = async () => {
-  const res = await postLoginWxMinSimpleAPI('13123456789')
+  const res = await postLoginWxMinSimpleAPI('13101226888')
   loginSuccess(res.result)
 }
 
