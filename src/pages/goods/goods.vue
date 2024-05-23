@@ -7,9 +7,11 @@ import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
 import PageSkeleton from './components/PageSkeleton.vue'
 import type {
+  SkuPopupEvent,
   SkuPopupInstance,
   SkuPopupLocalData,
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
+import { postMemberCartData } from '@/services/cart'
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
@@ -66,6 +68,19 @@ const selectArrText = computed(() => {
   return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格'
 })
 
+const onAddCart = (ev: SkuPopupEvent) => {
+  postMemberCartData({
+    skuId: ev._id,
+    count: ev.buy_num,
+  }).then(() => {
+    uni.showToast({
+      title: '加入购物车成功',
+      icon: 'success',
+    })
+    isShowSku.value = false
+  })
+}
+
 const currentIndex = ref(0)
 const onChange: UniHelper.SwiperOnChange = (ev) => {
   currentIndex.value = ev.detail.current
@@ -104,6 +119,7 @@ const isFinished = ref(false)
       borderColor: '#27BA9B',
       backgroundColor: '#E9F8F5',
     }"
+    @add-cart="onAddCart"
   />
 
   <scroll-view enable-back-to-top scroll-y class="viewport">
@@ -208,7 +224,7 @@ const isFinished = ref(false)
       <button class="icons-button" open-type="contact">
         <text class="icon-handset"></text>客服
       </button>
-      <navigator class="icons-button" url="/pages/cart/cart" open-type="switchTab">
+      <navigator class="icons-button" url="/pages/cart/cart2" open-type="navigate">
         <text class="icon-cart"></text>购物车
       </navigator>
     </view>
