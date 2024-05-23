@@ -2,21 +2,69 @@
 import { getGoodsByIdData } from '@/services/goods'
 import { onLoad } from '@dcloudio/uni-app'
 import type { GoodsResult } from 'goods'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
 import PageSkeleton from './components/PageSkeleton.vue'
+import type {
+  SkuPopupInstance,
+  SkuPopupLocalData,
+} from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
 const query = defineProps<{
   id: string
 }>()
+
+const localData = ref({} as SkuPopupLocalData)
+
 const goods = ref<GoodsResult>()
 const getGoods = async () => {
   const res = await getGoodsByIdData(query.id)
   goods.value = res.result
+  localData.value = {
+    _id: res.result.id,
+    name: res.result.name,
+    goods_thumb: res.result.mainPictures[0],
+    spec_list: res.result.specs.map((v) => ({ name: v.name, list: v.values })),
+    sku_list: res.result.skus.map((v) => ({
+      _id: v.id,
+      goods_id: res.result.id,
+      goods_name: res.result.name,
+      image: v.picture,
+      price: v.price * 100,
+      stock: v.inventory,
+      sku_name_arr: v.specs.map((vv) => vv.valueName),
+    })),
+  }
 }
+
+onLoad(() => {
+  getGoods().then(() => {
+    isFinished.value = true
+  })
+})
+
+const isShowSku = ref(false)
+enum SkuMode {
+  Both = 1,
+  Cart = 2,
+  Buy = 3,
+}
+
+const skuModes = SkuMode
+
+const mode = ref<SkuMode>(SkuMode.Cart)
+const openSkuPopup = (val: SkuMode) => {
+  isShowSku.value = true
+  mode.value = val
+}
+
+const skuPopupRef = ref<SkuPopupInstance>()
+const selectArrText = computed(() => {
+  return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格'
+})
 
 const currentIndex = ref(0)
 const onChange: UniHelper.SwiperOnChange = (ev) => {
@@ -41,14 +89,23 @@ const openPopup = (name: typeof popupName.value) => {
 }
 
 const isFinished = ref(false)
-onLoad(() => {
-  getGoods().then(() => {
-    isFinished.value = true
-  })
-})
 </script>
 
 <template>
+  <vk-data-goods-sku-popup
+    v-model="isShowSku"
+    :localdata="localData"
+    :mode="mode"
+    add-cart-background-color="#FFA868"
+    buy-now-background-color="#27BA9B"
+    ref="skuPopupRef"
+    :actived-style="{
+      color: '#27BA9B',
+      borderColor: '#27BA9B',
+      backgroundColor: '#E9F8F5',
+    }"
+  />
+
   <scroll-view enable-back-to-top scroll-y class="viewport">
     <view v-if="isFinished">
       <!-- 基本信息 -->
@@ -79,9 +136,9 @@ onLoad(() => {
 
         <!-- 操作面板 -->
         <view class="action">
-          <view class="item arrow">
+          <view @tap="openSkuPopup(skuModes.Both)" class="item arrow">
             <text class="label">选择</text>
-            <text class="text ellipsis"> 请选择商品规格 </text>
+            <text class="text ellipsis"> {{ selectArrText }} </text>
           </view>
           <view @tap="openPopup('address')" class="item arrow">
             <text class="label">送至</text>
@@ -156,8 +213,8 @@ onLoad(() => {
       </navigator>
     </view>
     <view class="buttons">
-      <view class="addcart"> 加入购物车 </view>
-      <view class="buynow"> 立即购买 </view>
+      <view @tap="openSkuPopup(skuModes.Cart)" class="addcart"> 加入购物车 </view>
+      <view @tap="openSkuPopup(skuModes.Buy)" class="buynow"> 立即购买 </view>
     </view>
   </view>
 
