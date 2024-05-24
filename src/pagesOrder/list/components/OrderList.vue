@@ -54,8 +54,14 @@ const onOrderPay = async (id: string) => {
   if (isDev) {
     await getPayMockAPI({ orderId: id })
   } else {
+    // #ifdef MP-WEIXIN
     const res = await getPayWxPayMiniPayAPI({ orderId: id })
     await wx.requestPayment(res.result)
+    // #endif
+
+    // #ifdef H5 || APP-PLUS
+    await getPayMockAPI({ orderId: id })
+    // #endif
   }
   const order = orderList.value.find((v) => v.id === id)
   order!.orderState = OrderState.PendingShipment

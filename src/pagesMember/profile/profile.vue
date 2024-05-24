@@ -19,6 +19,17 @@ const getMemberProfile = () => {
 }
 
 const onAvatarChange = () => {
+  // #ifdef APP-PLUS || H5
+  uni.chooseImage({
+    count: 1,
+    success: (res) => {
+      const tempFilePaths = res.tempFilePaths
+      uploadFile(tempFilePaths[0])
+    },
+  })
+  // #endif
+
+  // #ifdef MP-WEIXIN
   uni.chooseMedia({
     count: 1,
     mediaType: ['image'],
@@ -27,6 +38,7 @@ const onAvatarChange = () => {
       uploadFile(tempFilePath)
     },
   })
+  // #endif
 }
 
 const uploadFile = (file: string) => {

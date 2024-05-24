@@ -169,6 +169,9 @@
   </view>
 </template>
 <style lang="scss">
+/* #ifdef H5 || APP-PLUS */
+@import '../style/detail.scss';
+/* #endif */
 .sk-transparent {
   color: transparent !important;
 }

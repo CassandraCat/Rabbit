@@ -25,11 +25,24 @@ const query = defineProps<{
 
 uni.setNavigationBarTitle({ title: query.id ? '修改地址' : '新建地址' })
 
+// #ifdef MP-WEIXIN
 const onRegionChange: UniHelper.RegionPickerOnChange = (ev) => {
   form.value.fullLocation = ev.detail.value.join(' ')
   const [provinceCode, cityCode, countyCode] = ev.detail.code!
   Object.assign(form.value, { provinceCode, cityCode, countyCode })
 }
+// #endif
+
+// #ifdef H5 || APP-PLUS
+const onCityChange: UniHelper.UniDataPickerOnChange = (ev) => {
+  const [province, city, county] = ev.detail.value
+  Object.assign(form.value, {
+    provinceCode: province.value,
+    cityCode: city.value,
+    countyCode: county.value,
+  })
+}
+// #endif
 
 const onSwitchChange = (ev: any) => {
   form.value.isDefault = ev.detail.value ? 1 : 0
@@ -103,6 +116,7 @@ onLoad(() => {
       </uni-forms-item>
       <uni-forms-item name="countyCode" class="form-item">
         <text class="label">所在地区</text>
+        <!-- #ifdef MP-WEIXIN -->
         <picker
           @change="onRegionChange"
           class="picker"
@@ -112,6 +126,23 @@ onLoad(() => {
           <view v-if="form.fullLocation">{{ form.fullLocation }}</view>
           <view v-else class="placeholder">请选择省/市/区(县)</view>
         </picker>
+        <!-- #endif -->
+
+        <!-- #ifdef H5 || APP-PLUS -->
+        <uni-data-picker
+          placeholder="请选择地址"
+          popup-title="请选择城市"
+          collection="opendb-city-china"
+          field="code as value, name as text"
+          orderby="value asc"
+          :step-searh="true"
+          self-field="code"
+          parent-field="parent_code"
+          @change="onCityChange"
+          :clear-icon="false"
+          v-model="form.countyCode"
+        />
+        <!-- #endif -->
       </uni-forms-item>
       <uni-forms-item name="address" class="form-item">
         <text class="label">详细地址</text>
