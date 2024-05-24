@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
-  getMemberAddressByIdData,
-  postMemberAddressData,
-  putMemberAddressByIdData,
+  getMemberAddressByIdAPI,
+  postMemberAddressAPI,
+  putMemberAddressByIdAPI,
 } from '@/services/address'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
@@ -59,9 +59,9 @@ const onSubmit = async () => {
   try {
     await formRef.value?.validate?.()
     if (query.id) {
-      await putMemberAddressByIdData(query.id, form.value)
+      await putMemberAddressByIdAPI(query.id, form.value)
     } else {
-      await postMemberAddressData(form.value)
+      await postMemberAddressAPI(form.value)
     }
     uni.showToast({ icon: 'success', title: query.id ? '修改成功' : '添加成功' })
     setTimeout(() => {
@@ -74,7 +74,7 @@ const onSubmit = async () => {
 
 const getMemberAddressById = async () => {
   if (query.id) {
-    const res = await getMemberAddressByIdData(query.id)
+    const res = await getMemberAddressByIdAPI(query.id)
     Object.assign(form.value, res.result)
   }
 }

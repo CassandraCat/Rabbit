@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {
-  getMemberOrderPreData,
-  getMemberOrderPreNowData,
-  getMemberOrderRepurchaseByIdData,
-  postMemberOrderData,
+  getMemberOrderPreAPI,
+  getMemberOrderPreNowAPI,
+  getMemberOrderRepurchaseByIdAPI,
+  postMemberOrderAPI,
 } from '@/services/order'
 import { useAddressStore } from '@/stores/modules/address'
 import { onLoad } from '@dcloudio/uni-app'
@@ -39,17 +39,17 @@ const orderPre = ref<OrderPreResult>()
 
 const getMemberOrderPre = async () => {
   if (query.count && query.skuId) {
-    const res = await getMemberOrderPreNowData({
+    const res = await getMemberOrderPreNowAPI({
       count: query.count,
       skuId: query.skuId,
     })
     orderPre.value = res.result
   } else if (query.orderId) {
     // 再次购买
-    const res = await getMemberOrderRepurchaseByIdData(query.orderId)
+    const res = await getMemberOrderRepurchaseByIdAPI(query.orderId)
     orderPre.value = res.result
   } else {
-    const res = await getMemberOrderPreData()
+    const res = await getMemberOrderPreAPI()
     orderPre.value = res.result
   }
 }
@@ -65,7 +65,7 @@ const onOrderSubmit = async () => {
     return
   }
 
-  const res = await postMemberOrderData({
+  const res = await postMemberOrderAPI({
     addressId: selectedAddress.value?.id,
     buyerMessage: buyerMessage.value,
     deliveryTimeType: activeDelivery.value.type,

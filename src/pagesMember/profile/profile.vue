@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getMemberProfileData, putMemberProfileData } from '@/services/profile'
+import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile'
 import { useMemberStore } from '@/stores'
 import { onLoad } from '@dcloudio/uni-app'
 import type { Gender, ProfileDetail } from 'member'
@@ -13,7 +13,7 @@ const memberStore = useMemberStore()
 const profile = ref({} as ProfileDetail)
 
 const getMemberProfile = () => {
-  getMemberProfileData().then((res) => {
+  getMemberProfileAPI().then((res) => {
     profile.value = res.result
   })
 }
@@ -66,7 +66,7 @@ const onSubmit = () => {
   const { nickname, gender, birthday, profession } = profile.value
   memberStore.profile!.nickname = nickname
 
-  putMemberProfileData({
+  putMemberProfileAPI({
     nickname,
     gender,
     birthday,

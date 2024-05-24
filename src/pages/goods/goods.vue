@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getGoodsByIdData } from '@/services/goods'
+import { getGoodsByIdAPI } from '@/services/goods'
 import { onLoad } from '@dcloudio/uni-app'
 import type { GoodsResult } from 'goods'
 import { computed, ref } from 'vue'
@@ -11,7 +11,7 @@ import type {
   SkuPopupInstance,
   SkuPopupLocalData,
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
-import { postMemberCartData } from '@/services/cart'
+import { postMemberCartAPI } from '@/services/cart'
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
@@ -23,7 +23,7 @@ const localData = ref({} as SkuPopupLocalData)
 
 const goods = ref<GoodsResult>()
 const getGoods = async () => {
-  const res = await getGoodsByIdData(query.id)
+  const res = await getGoodsByIdAPI(query.id)
   goods.value = res.result
   localData.value = {
     _id: res.result.id,
@@ -69,7 +69,7 @@ const selectArrText = computed(() => {
 })
 
 const onAddCart = (ev: SkuPopupEvent) => {
-  postMemberCartData({
+  postMemberCartAPI({
     skuId: ev._id,
     count: ev.buy_num,
   }).then(() => {

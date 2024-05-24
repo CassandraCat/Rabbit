@@ -3,7 +3,7 @@ import { useGuessList } from '@/composables/useGuess'
 import { OrderState, orderStateList } from '@/services/constants'
 import {
   deleteMemberOrderAPI,
-  getMemberOrderByIdData,
+  getMemberOrderByIdAPI,
   getMemberOrderCancelByIdAPI,
   getMemberOrderConsignmentByIdAPI,
   getMemberOrderLogisticsByIdAPI,
@@ -44,7 +44,7 @@ const query = defineProps<{
 
 const order = ref<OrderResult>()
 const getMemberOrderById = async () => {
-  const res = await getMemberOrderByIdData(query.id)
+  const res = await getMemberOrderByIdAPI(query.id)
   order.value = res.result
   if (
     [OrderState.Completed, OrderState.PendingReview, OrderState.PendingReceipt].includes(

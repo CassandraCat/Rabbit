@@ -1,7 +1,7 @@
 import { http } from '@/utils/http'
 import type { BannerItem, CategoryItem, GuessItem, HotItem } from 'home'
 
-export const getHomeBannerData = (distributionSite = 1) => {
+export const getHomeBannerAPI = (distributionSite = 1) => {
   return http<BannerItem[]>({
     url: '/home/banner',
     method: 'GET',
@@ -11,21 +11,21 @@ export const getHomeBannerData = (distributionSite = 1) => {
   })
 }
 
-export const getHomeCategoryData = () => {
+export const getHomeCategoryAPI = () => {
   return http<CategoryItem[]>({
     method: 'GET',
     url: '/home/category/mutli',
   })
 }
 
-export const getHomeHotData = () => {
+export const getHomeHotAPI = () => {
   return http<HotItem[]>({
     method: 'GET',
     url: '/home/hot/mutli',
   })
 }
 
-export const getHomeGoodsGuessLikeData = (data?: PageParams) => {
+export const getHomeGoodsGuessLikeAPI = (data?: PageParams) => {
   return http<PageResult<GuessItem>>({
     method: 'GET',
     url: '/home/goods/guessLike',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { deleteMemberAddressByIdData, getMemberAddressData } from '@/services/address'
+import { deleteMemberAddressByIdAPI, getMemberAddressAPI } from '@/services/address'
 import { useAddressStore } from '@/stores/modules/address'
 import { onShow } from '@dcloudio/uni-app'
 import type { AddressItem } from 'address'
@@ -7,7 +7,7 @@ import { ref } from 'vue'
 
 const addressList = ref<AddressItem[]>([])
 const getMemberAddress = async () => {
-  const res = await getMemberAddressData()
+  const res = await getMemberAddressAPI()
   addressList.value = res.result
 }
 
@@ -16,7 +16,7 @@ const onDeleteAddress = (id: string) => {
     content: '删除地址?',
     success: async (res) => {
       if (res.confirm) {
-        await deleteMemberAddressByIdData(id)
+        await deleteMemberAddressByIdAPI(id)
         getMemberAddress()
       }
     },

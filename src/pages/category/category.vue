@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { getCategoryTopData } from '@/services/category'
-import { getHomeBannerData } from '@/services/home'
+import { getCategoryTopAPI } from '@/services/category'
+import { getHomeBannerAPI } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
 import type { CategoryTopItem } from 'category'
 import type { BannerItem } from 'home'
@@ -9,14 +9,14 @@ import PageSkeleton from './components/PageSkeleton.vue'
 
 const bannerList = ref<BannerItem[]>([])
 const getBannerList = () => {
-  getHomeBannerData().then((res) => {
+  getHomeBannerAPI().then((res) => {
     bannerList.value = res.result
   })
 }
 
 const categoryList = ref<CategoryTopItem[]>([])
 const getCategoryList = () => {
-  getCategoryTopData().then((res) => {
+  getCategoryTopAPI().then((res) => {
     categoryList.value = res.result
   })
 }

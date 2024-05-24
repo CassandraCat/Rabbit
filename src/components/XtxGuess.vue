@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getHomeGoodsGuessLikeData } from '@/services/home'
+import { getHomeGoodsGuessLikeAPI } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
 import type { GuessItem } from 'home'
 import { onMounted, ref } from 'vue'
@@ -15,7 +15,7 @@ const getHomeGoodsGuessLikeList = async () => {
   if (finish.value === true) {
     return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
-  const res = await getHomeGoodsGuessLikeData(pageParams)
+  const res = await getHomeGoodsGuessLikeAPI(pageParams)
   guessList.value.push(...res.result.items)
   if (pageParams.page < res.result.pages) {
     pageParams.page++

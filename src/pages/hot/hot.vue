@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getHotRecommendData } from '@/services/hot'
+import { getHotRecommendAPI } from '@/services/hot'
 import { onLoad } from '@dcloudio/uni-app'
 import type { SubTypeItem } from 'hot'
 import { ref } from 'vue'
@@ -25,7 +25,7 @@ const subTypes = ref<(SubTypeItem & { finish?: boolean })[]>([])
 const activeIndex = ref(0)
 
 const getHotRecommend = async () => {
-  const res = await getHotRecommendData(currentHot!.url, {
+  const res = await getHotRecommendAPI(currentHot!.url, {
     page: import.meta.env.DEV ? 30 : 1,
     pageSize: 10,
   })
@@ -42,7 +42,7 @@ const onScrollToLower = () => {
     return uni.showToast({ icon: 'none', title: '没有更多数据了~' })
   }
 
-  getHotRecommendData(currentHot!.url, {
+  getHotRecommendAPI(currentHot!.url, {
     subType: currentSubType.id,
     page: currentSubType.goodsItems.page,
     pageSize: currentSubType.goodsItems.pageSize,

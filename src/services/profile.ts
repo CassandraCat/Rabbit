@@ -1,14 +1,14 @@
 import { http } from '@/utils/http'
 import type { ProfileDetail, ProfileParams } from 'member'
 
-export const getMemberProfileData = () => {
+export const getMemberProfileAPI = () => {
   return http<ProfileDetail>({
     method: 'GET',
     url: '/member/profile',
   })
 }
 
-export const putMemberProfileData = (data: ProfileParams) => {
+export const putMemberProfileAPI = (data: ProfileParams) => {
   return http<ProfileDetail>({
     method: 'PUT',
     url: '/member/profile',

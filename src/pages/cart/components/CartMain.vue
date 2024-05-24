@@ -2,10 +2,10 @@
 import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box'
 import { useGuessList } from '@/composables/useGuess'
 import {
-  deleteMemberCartData,
-  getMemberCartData,
-  putMemberCartBySkuIdData,
-  putMemberCartSelectedData,
+  deleteMemberCartAPI,
+  getMemberCartAPI,
+  putMemberCartBySkuIdAPI,
+  putMemberCartSelectedAPI,
 } from '@/services/cart'
 import { useMemberStore } from '@/stores'
 import { onShow } from '@dcloudio/uni-app'
@@ -24,7 +24,7 @@ const cartList = ref<CartItem[]>([])
 const showCartList = ref(true)
 
 const getMemberCart = () => {
-  getMemberCartData().then((res) => {
+  getMemberCartAPI().then((res) => {
     cartList.value = res.result
     showCartList.value = res.result.length > 0
   })
@@ -35,7 +35,7 @@ const onDeleteCart = (skuId: string) => {
     content: '是否删除',
     success: async (res) => {
       if (res.confirm) {
-        await deleteMemberCartData({ ids: [skuId] })
+        await deleteMemberCartAPI({ ids: [skuId] })
         getMemberCart()
       }
     },
@@ -43,12 +43,12 @@ const onDeleteCart = (skuId: string) => {
 }
 
 const onChangeCount = (ev: InputNumberBoxEvent) => {
-  putMemberCartBySkuIdData(ev.index, { count: ev.value })
+  putMemberCartBySkuIdAPI(ev.index, { count: ev.value })
 }
 
 const onChangeSelected = (item: CartItem) => {
   item.selected = !item.selected
-  putMemberCartBySkuIdData(item.skuId, { selected: item.selected }).then((res) => {
+  putMemberCartBySkuIdAPI(item.skuId, { selected: item.selected }).then((res) => {
     console.log(res)
   })
 }
@@ -59,7 +59,7 @@ const isSelectedAll = computed(() => {
 
 const onChangeSelectedAll = () => {
   const selected = !isSelectedAll.value
-  putMemberCartSelectedData({ selected })
+  putMemberCartSelectedAPI({ selected })
   cartList.value.forEach((v) => (v.selected = selected))
 }
 

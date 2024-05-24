@@ -2,7 +2,7 @@
 import CustomNavBar from './components/CustomNavBar.vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 import HotPanel from './components/HotPanel.vue'
-import { getHomeBannerData, getHomeCategoryData, getHomeHotData } from '@/services/home'
+import { getHomeBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/services/home'
 import { onLoad } from '@dcloudio/uni-app'
 import type { BannerItem, CategoryItem, HotItem } from 'home'
 import { ref } from 'vue'
@@ -11,21 +11,21 @@ import { useGuessList } from '@/composables/useGuess'
 
 const bannerList = ref<BannerItem[]>([])
 const getBannerList = () => {
-  getHomeBannerData().then((res) => {
+  getHomeBannerAPI().then((res) => {
     bannerList.value = res.result
   })
 }
 
 const categoryList = ref<CategoryItem[]>([])
 const getCategory = () => {
-  getHomeCategoryData().then((res) => {
+  getHomeCategoryAPI().then((res) => {
     categoryList.value = res.result
   })
 }
 
 const hotList = ref<HotItem[]>([])
 const getHomeHot = () => {
-  getHomeHotData().then((res) => {
+  getHomeHotAPI().then((res) => {
     hotList.value = res.result
   })
 }

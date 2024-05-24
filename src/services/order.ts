@@ -8,14 +8,14 @@ import type {
   OrderResult,
 } from 'order'
 
-export const getMemberOrderPreData = () => {
+export const getMemberOrderPreAPI = () => {
   return http<OrderPreResult>({
     method: 'GET',
     url: '/member/order/pre',
   })
 }
 
-export const getMemberOrderPreNowData = (data: {
+export const getMemberOrderPreNowAPI = (data: {
   skuId: string
   count: string
   addressId?: string
@@ -27,7 +27,7 @@ export const getMemberOrderPreNowData = (data: {
   })
 }
 
-export const postMemberOrderData = (data: OrderCreateParams) => {
+export const postMemberOrderAPI = (data: OrderCreateParams) => {
   return http<{ id: string }>({
     method: 'POST',
     url: '/member/order',
@@ -35,14 +35,14 @@ export const postMemberOrderData = (data: OrderCreateParams) => {
   })
 }
 
-export const getMemberOrderByIdData = (id: string) => {
+export const getMemberOrderByIdAPI = (id: string) => {
   return http<OrderResult>({
     method: 'GET',
     url: `/member/order/${id}`,
   })
 }
 
-export const getMemberOrderRepurchaseByIdData = (id: string) => {
+export const getMemberOrderRepurchaseByIdAPI = (id: string) => {
   return http<OrderPreResult>({
     method: 'GET',
     url: `/member/order/repurchase/${id}`,
